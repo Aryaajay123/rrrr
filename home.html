@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRAVITECH</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #080819;
+      color: #e9e4e4;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #6b90b0, #4c3eb8);
+      color: rgb(255, 255, 255);
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 20px;
+      background: url("farm-bg.jpg") center/cover no-repeat;
+      color: white;
+      height: 90vh;
+      
+    }
+    .hero h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+    }
+
+    .btn {
+      background: #17a2a9;
+      color: #333;
+      padding: 12px 25px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #3140e3;
+    }
+
+    .section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .section h3 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #3f60e5;
+    }
+
+    .section p {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+    }
+
+    footer {
+      background: #0b4b83;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 20px;
+    font-weight: 500;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.3s ease;
+  }
+
+  .nav-link:hover {
+    border-bottom: 2px solid #ffeb3b;
+  }
+
+  .nav-link.active {
+    border-bottom: 2px solid #ffffff;
+  }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1><B>GRAVITECH</B></h1>
+   <nav>
+      <a href="home.html" class="nav-link active">Home</a>
+      <a href="about.html" class="nav-link ">About</a>
+      <a href="features.html"class="nav-link ">Features</a>
+      <a href="contact.html" class="nav-link ">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+   <video autoplay muted loop playsinline style="width:100%; height:120%; border-radius:20px; object-fit:cover; display:block; margin:auto;">
+  <source src="background video.mp4" type="video/mp4">
+  </section>
+
+  <section class="section" id="about">
+    <h3>Why This Matters</h3>
+    <p>
+     Gravitech Weather Website provides real-time weather data, advanced forecasting models, and interactive tools, designed to deliver precise meteorological insights for technology-savvy users and software developers.It is a specialized weather platform designed to provide accurate meteorological data and forecasts, targeting technology enthusiasts and software users seeking reliable, real-time climate information.
+  
+  </p>  </section>
+
+  <section class="section" id="join">
+    <h3>Unique Points</h3>
+    <p>
+     Gravitech integrates advanced meteorological algorithms with real-time data, offering precise, localized weather forecasts and seamless API integration for enhanced user-driven software applications.
+    </p><br>
+    <a href="map.html" class="btn">Get Started</a>
+  </section>
+
+  <footer>
+    <p>&copy; <b>GRAVITECH</b>. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

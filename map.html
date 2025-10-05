@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Interactive Weather Map</title>
+ <link rel="icon" type="image/png" href="favicon-32x32.png">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<style>
+  body { margin: 0; font-family: Arial, sans-serif; }
+  h2 { text-align: center; background: #4a90e2; color: white; padding: 10px 0; margin: 0; }
+  #searchContainer { text-align: center; margin: 10px 0; }
+  #searchInput { width: 300px; padding: 6px 10px; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc; }
+  #map { height: 80vh; width: 100%; }
+</style>
+</head>
+<body>
+<h2>🌦 Click or Search to Get Weather Info</h2>
+<div id="searchContainer">
+  <input type="text" id="searchInput" placeholder="Type a city and press Enter" />
+</div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+const map = L.map('map').setView([20.5937, 78.9629], 5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+let marker = null;
+
+
+function degToCompass(num) {
+  const val = Math.floor((num / 22.5) + 0.5);
+  const arr = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+  return arr[(val % 16)];
+}
+
+const weatherCodeMap = {
+  0: "Clear", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+  45: "Fog", 48: "Depositing rime fog", 51: "Light drizzle", 53: "Moderate drizzle",
+  55: "Dense drizzle", 61: "Slight rain", 63: "Moderate rain", 65: "Heavy rain",
+  71: "Slight snow", 73: "Moderate snow", 75: "Heavy snow", 80: "Showers",
+  81: "Moderate showers", 82: "Violent showers", 95: "Thunderstorm",
+  96: "Thunderstorm with hail", 99: "Severe hail"
+};
+
+async function getWeather(lat, lon, placeName="Selected Location") {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,apparent_temperature,precipitation,weathercode,windspeed_10m,winddirection_10m,relativehumidity_2m,uv_index&timezone=auto`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.current_weather) {
+      alert("Weather data unavailable for this location.");
+      return;
+    }
+
+    const current = data.current_weather;
+    const currentTime = current.time;
+
+    const idx = data.hourly.time.indexOf(currentTime);
+
+    const temperature = current.temperature;
+    const feelsLike = data.hourly.apparent_temperature[idx];
+    const windSpeed = current.windspeed;
+    const windDir = current.winddirection;
+    const weatherCode = current.weathercode;
+
+    const humidity = data.hourly.relativehumidity_2m[idx];
+    const precipitation = data.hourly.precipitation[idx];
+    const uvIndex = data.hourly.uv_index[idx];
+
+    const popupContent = `
+      <b>📍 ${placeName}</b><br>
+      🌡 <b>Temperature:</b> ${temperature}°C (Feels like ${feelsLike}°C)<br>
+      📝 <b>Condition:</b> ${weatherCodeMap[weatherCode] || "Unknown"}<br>
+      💨 <b>Wind:</b> ${windSpeed} km/h • ${degToCompass(windDir)}<br>
+      💧 <b>Humidity:</b> ${humidity}%<br>
+      🌧 <b>Precipitation:</b> ${precipitation} mm<br>
+      🌞 <b>UV Index:</b> ${uvIndex}<br>
+      ⏱ <b>Time:</b> ${currentTime}
+    `;
+
+    if (marker) map.removeLayer(marker);
+    marker = L.marker([lat, lon])
+      .addTo(map)
+      .bindPopup(popupContent)
+      .openPopup();
+
+    map.setView([lat, lon], 9);
+
+  } catch (err) {
+    console.error("Weather fetch error:", err);
+    alert("Failed to fetch weather data.");
+  }
+}
+
+
+map.on('click', e => getWeather(e.latlng.lat, e.latlng.lng));
+
+document.getElementById('searchInput').addEventListener('keypress', async e => {
+  if (e.key === 'Enter') {
+    const query = e.target.value.trim();
+    if (!query) return;
+    try {
+      const searchUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
+      const res = await fetch(searchUrl);
+      const results = await res.json();
+      if (results.length > 0) {
+        const { lat, lon, display_name } = results[0];
+        getWeather(parseFloat(lat), parseFloat(lon), display_name);
+      } else {
+        alert("Location not found.");
+      }
+    } catch (err) {
+      console.error("Search error:", err);
+      alert("Failed to search location.");
+    }
+  }
+});
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(pos => {
+    getWeather(pos.coords.latitude, pos.coords.longitude, "Your Location");
+  });
+}
+</script>
+</body>
+</html>
